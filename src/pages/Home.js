@@ -24,11 +24,11 @@ const Home = () => {
   }, []);
 
   return (
-    <>
+    <section>
       <h2>Trending today</h2>
       {isLoader && <Loader />}
       <MovieList movies={trendingMovies} />
-    </>
+    </section>
   );
 };
 
