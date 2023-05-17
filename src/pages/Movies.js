@@ -1,25 +1,25 @@
 import { useEffect, useState } from 'react';
 import { getMoviesByName } from 'api/api';
-import { useSearchParams, useLocation } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { Loader } from 'components/Loader/Loader';
 import { MovieList } from 'components/MovieList/MovieList';
+import { Button, Form, Input } from './Movies.styled';
 
 const Movies = () => {
   const [movies, setMovies] = useState([]);
   const [isLoader, setIsLoader] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const [isFound, setIsFound] = useState(true);
-  const location = useLocation();
 
   useEffect(() => {
-    const query = searchParams.get('query') ?? ''; // щоб не було помилки, якщо query не буде в URL
+    const query = searchParams.get('query') ?? '';
     if (!query) return;
 
     const getMovie = async () => {
       setIsLoader(true);
       try {
         const { results } = await getMoviesByName(query);
-        if (results.total_results === 0) {
+        if (results.length === 0) {
           setIsFound(false);
           setMovies([]);
         } else {
@@ -34,23 +34,38 @@ const Movies = () => {
     };
     getMovie();
   }, [searchParams]);
-  const handleSubmit = query => {
-    setSearchParams({ query });
+
+  // const handleSubmit = query => {
+  //   setSearchParams({ query });
+  // };
+
+  const updateQueryString = e => {
+    const queryValue = e.target.value;
+    if (queryValue === '') {
+      return setSearchParams({});
+    }
+    setSearchParams({ type: queryValue });
   };
 
   return (
     <section>
-      <form onSubmit={handleSubmit}>
-        <input type="text" name="query" placeholder="Search movies" />
-        <button type="submit">Search</button>
-      </form>
+      <Form>
+        <Input
+          type="text"
+          name="query"
+          placeholder="Search movies"
+          onChange={updateQueryString}
+        />
+        <Button type="submit">Search</Button>
+      </Form>
       {isLoader && <Loader />}
       {isFound ? (
-        <MovieList movies={movies} state={{ from: location }} />
+        <MovieList movies={movies} />
       ) : (
         <p>Sorry, we can't find any movie with that title</p>
       )}
     </section>
   );
 };
+
 export default Movies;

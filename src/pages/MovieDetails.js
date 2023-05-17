@@ -1,14 +1,17 @@
-import { Link, useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, Outlet } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Loader } from 'components/Loader/Loader';
 import { getMoviesById } from 'api/api';
-import { Section, Image, LinkBack, List } from './MovieDetails.styled';
+import { Section, Image, LinkButton, List } from './MovieDetails.styled';
+import { useRef } from 'react';
+import { Suspense } from 'react';
 
 const MovieDetails = () => {
   const { movieId } = useParams();
   const location = useLocation();
   const [movieInfo, setMovieInfo] = useState([]);
   const [isLoader, setIsLoader] = useState(false);
+  const backLinkHref = useRef(location.state?.from ?? '/');
 
   useEffect(() => {
     setIsLoader(true);
@@ -38,9 +41,9 @@ const MovieDetails = () => {
 
   return (
     <>
-      <LinkBack to={location?.state?.from ?? '/'}>
+      <LinkButton to={backLinkHref.current}>
         <button type="button">Go Back</button>
-      </LinkBack>
+      </LinkButton>
       <Section>
         {isLoader && <Loader />}
         <Image src={movieImg} alt={original_title} />
@@ -57,15 +60,22 @@ const MovieDetails = () => {
           </p>
         </div>
       </Section>
-
       <List>
+        <h3>Additional information</h3>
         <li>
-          <Link>Cast</Link>
+          <LinkButton to="cast">
+            <button type="button">Cast</button>
+          </LinkButton>
         </li>
         <li>
-          <Link>Reviews</Link>
+          <LinkButton to="reviews">
+            <button type="button">Reviews</button>
+          </LinkButton>
         </li>
       </List>
+      <Suspense>
+        <Outlet />
+      </Suspense>
     </>
   );
 };

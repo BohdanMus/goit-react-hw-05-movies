@@ -23,7 +23,7 @@ export const List = styled.ul`
     }
   }
   h3 {
-    color: green;
+    color: black;
   }
   a {
     text-decoration: none;

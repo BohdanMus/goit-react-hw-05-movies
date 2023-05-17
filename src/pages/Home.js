@@ -2,6 +2,7 @@ import { Loader } from 'components/Loader/Loader';
 import { MovieList } from 'components/MovieList/MovieList';
 import { useEffect, useState } from 'react';
 import { getTrendingMovies } from 'api/api';
+import { Title } from './Home.styled';
 
 const Home = () => {
   const [trendingMovies, setTrendingMovies] = useState([]);
@@ -25,7 +26,7 @@ const Home = () => {
 
   return (
     <section>
-      <h2>Trending today</h2>
+      <Title>Trending today</Title>
       {isLoader && <Loader />}
       <MovieList movies={trendingMovies} />
     </section>
